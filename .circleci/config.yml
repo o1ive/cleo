@@ -61,7 +61,7 @@ jobs:
       - run: bundle exec rubocop
 
       # Run Brakeman
-      - run: bundle exec brakeman -A -w3 -z
+      - run: bundle exec brakeman -A -w1 -z
 
       # Run RSpec
       - run: bundle exec rspec
