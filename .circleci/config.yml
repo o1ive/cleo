@@ -1,0 +1,60 @@
+version 2.1
+jobs:
+  build:
+    parallelism: 1
+    working_directory: ~/app
+    docker:
+      - image: circleci/ruby:2.5.1-node-browsers
+      - image: circleci/mysql:5.7-ram
+        command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_bin --innodb-large-prefix=true --innodb-file-format=Barracuda
+        environment:
+          MYSQL_ROOT_PASSWORD:
+    steps:
+      - checkout
+
+      # Which version of bundler?
+      - run:
+          name: Which bundler?
+          command: bundle -v
+
+      # Restore bundle cache
+      - restore_cache:
+          keys:
+            - rails-cleome-bundle-{{ checksum "Gemfile.lock" }}
+            - rails-cleome-bundle-
+
+      # Bundle Install
+      - run: bundle check || bundle install --jobs 4 --retry 3
+
+      # yarn.lock install
+#        - run: yarn install
+
+      # Store bundle cache
+      - save_cache:
+          key: rails-cleome-bundle-{{ checksum "Gemfile.lock" }}
+          paths:
+            - vendor/bundle
+#             - node_modules
+
+      # Wait for DB
+      - run: dockerize -wait tcp://localhost:3306 -timeout 1m
+
+      # Database setup
+      - run: bundle exec rake db:create
+      - run: bundle exec rake db:migrate
+
+       # Build JavaScript files
+#       - run: bundle exec bin/webpack
+
+      # Run Rubocop
+      - run: bundle exec rubocop
+
+      # Run Brakeman
+      - run: bundle exec brakeman -A -w3 -z
+
+      # Run RSpec
+      - run: bundle exec rspec
+
+#        Save test results for timing analysis
+      - store_test_results:
+          path: test_results
