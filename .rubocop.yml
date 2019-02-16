@@ -1,8 +1,8 @@
 AllCops:
   TargetRubyVersion: 2.6
-  Include:
-    - '**/Rakefile'
-    - '**/config.ru'
+  # Include:
+    # - '**/Rakefile'
+    # - '**/config.ru'
   Exclude:
     - 'public/**/*'
     - 'tmp/**/*'
@@ -10,6 +10,8 @@ AllCops:
     - 'bin/**/*'
     - 'db/**/*'
     - 'vendor/**/*'
+    - 'spec/**/*'
+    - 'config/**/*'
 
 Rails:
   Enabled: true
@@ -28,4 +30,7 @@ Style/Documentation:
 
 # ifの条件内などで変数への代入を許可
 Lint/AssignmentInCondition:
+  Enabled: false
+
+Rails/InverseOf:
   Enabled: false
