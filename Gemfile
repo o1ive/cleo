@@ -61,6 +61,7 @@ group :development do
   gem 'pre-commit', require: false
   gem 'bullet'
   gem 'brakeman'
+  gem 'dotenv-rails'
 end
 
 group :production do

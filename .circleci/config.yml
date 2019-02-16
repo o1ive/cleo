@@ -1,14 +1,21 @@
-version 2.1
+version: 2.1
 jobs:
   build:
     parallelism: 1
     working_directory: ~/app
     docker:
       - image: circleci/ruby:2.5.1-node-browsers
+        environment:
+          RAILS_ENV: test
+          DB_HOST: 127.0.0.1
+          DB_PORT: 3306
+          DB_NAME: cleome_test
+          DB_USER: root
       - image: circleci/mysql:5.7-ram
         command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_bin --innodb-large-prefix=true --innodb-file-format=Barracuda
         environment:
-          MYSQL_ROOT_PASSWORD:
+          MYSQL_ALLOW_EMPTY_PASSWORD: yes
+          MYSQL_DATABASE: cleome_test
     steps:
       - checkout
 
@@ -36,12 +43,16 @@ jobs:
             - vendor/bundle
 #             - node_modules
 
-      # Wait for DB
-      - run: dockerize -wait tcp://localhost:3306 -timeout 1m
+      - run:
+          name: wait for db
+          command: dockerize -wait tcp://127.0.0.1:3306 -timeout 1m
 
       # Database setup
-      - run: bundle exec rake db:create
-      - run: bundle exec rake db:migrate
+      - run:
+          name: Set up DB
+          command: |
+            bundle exec rake db:create
+            bundle exec rake db:migrate
 
        # Build JavaScript files
 #       - run: bundle exec bin/webpack
