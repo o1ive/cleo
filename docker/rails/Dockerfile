@@ -1,4 +1,4 @@
-FROM ruby:2.5.1
+FROM ruby:2.6.1
 ENV LANG C.UTF-8
 ENV GEM_PACKAGES libxml2-dev libxslt-dev imagemagick
 RUN apt-get update \
