@@ -1,16 +1,85 @@
-inherit_from:
-  - .rubocop_airbnb.yml
+AllCops:
+  TargetRubyVersion: 2.6
+  Include:
+    - '**/Rakefile'
+    - '**/config.ru'
+  Exclude:
+    - 'public/**/*'
+    - 'tmp/**/*'
+    - 'log/**/*'
+    - 'bin/**/*'
+    - 'db/**/*'
+    - 'vendor/**/*'
+    - 'spec/**/*'
+    - 'config/**/*'
 
 Rails:
   Enabled: true
 
-LineLength:
-  Max: 130
+# Rails/SkipsModelValidations:
+#   Enabled: false
 
-AllCops:
-  TargetRubyVersion: 2.6.1
+Naming/FileName:
   Exclude:
-  - 'bin/*'
-  - 'config/**/*'
-  - 'db/**/*'
-  - 'spec/spec_helper.rb'
+    - 'Gemfile'
+
+# 日本語でコメントできるようにします
+Style/AsciiComments:
+  Enabled: false
+
+# frozen commentは必須ではありません
+Style/FrozenStringLiteralComment:
+  Enabled: false
+
+# ドキュメントに関するチェックをしません
+Style/Documentation:
+  Enabled: false
+
+# blockコメントを許可
+Style/BlockComments:
+  Enabled: false
+
+# begin/end/whileを使えるようにします
+Lint/Loop:
+  Enabled: false
+
+# ifの条件内などで変数への代入を許可します
+Lint/AssignmentInCondition:
+  Enabled: false
+
+Style/Lambda:
+  Enabled: false
+
+Metrics/LineLength:
+  Max: 120
+
+Metrics/BlockLength:
+  Max: 50
+  Exclude:
+    - 'spec/**/*'
+    - 'config/routes.rb'
+    - 'config/initializers/*'
+    - 'app/*/concerns/*'
+
+CyclomaticComplexity:
+  Max: 7
+
+PerceivedComplexity:
+  Max: 8
+
+Rails/UnknownEnv:
+  Environments:
+    - production
+    - development
+    - test
+    - internal
+    - staging
+
+Rails/SkipsModelValidations:
+  Enabled: false
+
+Rails/HasManyOrHasOneDependent:
+  Enabled: false
+
+Naming/PredicateName:
+  Enabled: false
